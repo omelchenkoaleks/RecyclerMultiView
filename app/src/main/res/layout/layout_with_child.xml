@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_marginBottom="1dp"
+    android:padding="16dp"
+    android:background="@color/colorRow">
+
+    <RelativeLayout
+        android:id="@+id/button"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center">
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_keyboard_arrow_up_24dp"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/text_view_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:text="@string/this_is_item_with_child_text"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        android:layout_toLeftOf="@+id/button"
+        android:layout_alignParentTop="true"/>
+
+    <com.github.aakira.expandablelayout.ExpandableLinearLayout
+        android:id="@+id/expandable_layout_el"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_view_tv"
+        android:orientation="vertical"
+        app:ael_duration="400"
+        app:ael_expanded="false"
+        app:ael_interpolator="bounce">
+
+        <TextView
+            android:id="@+id/text_view_child_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:text="@string/this_is_child_item_text"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:layout_toLeftOf="@+id/button"
+            android:layout_alignParentTop="true"/>
+
+    </com.github.aakira.expandablelayout.ExpandableLinearLayout>
+
+</RelativeLayout>
