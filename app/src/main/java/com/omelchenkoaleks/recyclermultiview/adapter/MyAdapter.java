@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -16,27 +17,45 @@ import com.github.aakira.expandablelayout.ExpandableLayoutListenerAdapter;
 import com.github.aakira.expandablelayout.ExpandableLinearLayout;
 import com.github.aakira.expandablelayout.Utils;
 import com.omelchenkoaleks.recyclermultiview.R;
+import com.omelchenkoaleks.recyclermultiview.interfaces.ItemClickListener;
 import com.omelchenkoaleks.recyclermultiview.model.Item;
 
 import java.util.List;
 
 // для макета без наследника
-class MyViewHolderWithoutChild extends RecyclerView.ViewHolder {
+class MyViewHolderWithoutChild extends RecyclerView.ViewHolder
+        implements View.OnClickListener {
     public TextView mTextView;
+    ItemClickListener mItemClickListener;
 
     public MyViewHolderWithoutChild(@NonNull View itemView) {
         super(itemView);
 
         mTextView = itemView.findViewById(R.id.text_view_tv);
+
+        itemView.setOnClickListener(this);
+    }
+
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
+    }
+
+    @Override
+    public void onClick(View view) {
+        mItemClickListener.onClick(view, getAdapterPosition(), false);
     }
 }
 
 // для макета с наследником
-class MyViewHolderWithChild extends RecyclerView.ViewHolder {
+class MyViewHolderWithChild extends RecyclerView.ViewHolder
+        implements View.OnClickListener {
+
     public TextView mTextView;
     public TextView mTextViewChild;
     public RelativeLayout mButtonRelativeLayout;
     public ExpandableLinearLayout mExpandableLayout;
+
+    ItemClickListener mItemClickListener;
 
     public MyViewHolderWithChild(@NonNull View itemView) {
         super(itemView);
@@ -45,6 +64,17 @@ class MyViewHolderWithChild extends RecyclerView.ViewHolder {
         mTextViewChild = itemView.findViewById(R.id.text_view_child_tv);
         mButtonRelativeLayout = itemView.findViewById(R.id.button);
         mExpandableLayout = itemView.findViewById(R.id.expandable_layout_el);
+
+        itemView.setOnClickListener(this);
+    }
+
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
+    }
+
+    @Override
+    public void onClick(View view) {
+        mItemClickListener.onClick(view, getAdapterPosition(), false);
     }
 }
 
@@ -93,6 +123,15 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 Item item = mItems.get(position);
                 myViewHolderWithoutChild.setIsRecyclable(false);
                 myViewHolderWithoutChild.mTextView.setText(item.getText());
+
+                // set event
+                myViewHolderWithoutChild.setItemClickListener(new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position, boolean isLongClick) {
+                        Toast.makeText(mContext, "Without child click : "
+                                + mItems.get(position).getText(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
             break;
             case 1: {
@@ -125,13 +164,29 @@ public class MyAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 myViewHolderWithChild.mButtonRelativeLayout.setOnClickListener(
                         new View.OnClickListener() {
                             @Override
-                            public void onClick(View v) {
+                            public void onClick(View view) {
                                 // Expandable child item
                                 myViewHolderWithChild.mExpandableLayout.toggle();
                             }
                         });
 
                 myViewHolderWithChild.mTextViewChild.setText(mItems.get(position).getSubText());
+                myViewHolderWithChild.mTextViewChild.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(mContext, ""
+                                + mItems.get(position).getSubText(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+                // set event
+                myViewHolderWithChild.setItemClickListener(new ItemClickListener() {
+                    @Override
+                    public void onClick(View view, int position, boolean isLongClick) {
+                        Toast.makeText(mContext, "With child click : "
+                                + mItems.get(position).getText(), Toast.LENGTH_LONG).show();
+                    }
+                });
             }
             break;
             default:
